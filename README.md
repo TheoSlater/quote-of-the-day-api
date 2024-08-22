@@ -6,16 +6,16 @@ This repository provides a quote API service that you can easily integrate into 
 
 ### 1. **Install Dependencies**
 
-Ensure you have the necessary dependencies installed. 
+Ensure you have the necessary dependencies installed. For this you will need Material UI (MUI)
 
 run either
 
 ```bash
-npm i
+npm i @mui/material @emotion/react @emotion/styled
 ```
 or
 ```bash
-yarn
+yarn add @mui/material @emotion/react @emotion/styled
 ```
 ### 2. Set up the API
 
