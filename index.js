@@ -5,22 +5,22 @@ const app = express();
 
 const { inspirationalQuotes } = require("./inspirationalQuotes");
 const { quotes: standardQuotes } = require("./standardQuotes");
-const config = require("./config");
 
 app.use(cors());
 app.use(express.json());
 
-// Middleware to check if the server is paused
+// Middleware to check if the server is in maintenance mode
 app.use((req, res, next) => {
-  if (config.isPaused) {
+  if (process.env.MAINTENANCE_MODE === "true") {
     return res
       .status(503)
-      .json({ message: "Server is paused. Try again later." });
+      .json({
+        message: "Server is in maintenance mode. Please try again later.",
+      });
   }
   next();
 });
 
-// Serve the HTML UI
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
@@ -54,17 +54,6 @@ app.get("/api/standard", (req, res) => {
   const quote = getQuoteOfTheDay(standardQuotes, cachedStandardQuote);
   cachedStandardQuote = quote;
   res.json({ quote });
-});
-
-// Routes to control the pause state
-app.post("/pause", (req, res) => {
-  config.isPaused = true;
-  res.json({ message: "Server is paused." });
-});
-
-app.post("/resume", (req, res) => {
-  config.isPaused = false;
-  res.json({ message: "Server is resumed." });
 });
 
 module.exports = app;
