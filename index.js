@@ -60,11 +60,13 @@ app.get("/api/standard", (req, res) => {
 
 // Routes to control the pause state
 app.post("/pause", (req, res) => {
+  console.log("Pause route hit");
   isPaused = true;
   res.json({ message: "Server is paused." });
 });
 
 app.post("/resume", (req, res) => {
+  console.log("Resume route hit");
   isPaused = false;
   res.json({ message: "Server is resumed." });
 });
