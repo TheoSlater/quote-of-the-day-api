@@ -1,13 +1,15 @@
 {
   "version": 2,
-  "builds": [{ "src": "index.js", "use": "@vercel/node" }],
+  "builds": [
+    { "src": "index.js", "use": "@vercel/node" },
+    { "src": "maintenance.html", "use": "@vercel/static" }
+  ],
   "routes": [
     { "src": "/api/(.*)", "dest": "/index.js" },
     { "src": "/maintenance.html", "dest": "/maintenance.html" },
     {
       "src": "/(.*)",
       "dest": "/maintenance.html",
-      "status": 503,
       "headers": { "Cache-Control": "no-store" }
     }
   ]
