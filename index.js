@@ -4,6 +4,7 @@ const app = express();
 
 const { inspirationalQuotes } = require("./inspirationalQuotes");
 const { quotes: standardQuotes } = require("./standardQuotes");
+console.log("standardQuotes:", standardQuotes);
 
 app.use(cors());
 app.use(express.json());
