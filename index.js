@@ -1,35 +1,49 @@
+const cors = require("cors");
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Sample data
-const inspirationalQuotes = [
-  "The only limit to our realization of tomorrow is our doubts of today.",
-  "Do not wait to strike till the iron is hot, but make it hot by striking.",
-  // TODO: Add more quotes
-];
+const { inspirationalQuotes } = require("./inspirationalQuotes");
+const { standardQuotes } = require("./standardQuotes");
 
-const standardQuotes = [
-  "To be, or not to be, that is the question.",
-  "The only thing we have to fear is fear itself.",
-  // TODO: Add more quotes
-];
-
-// Middleware
+app.use(cors());
 app.use(express.json());
 
-// Routes
+let cachedInspirationalQuote = null;
+let cachedStandardQuote = null;
+let lastSelectedDate = null;
+
+const getTodayDateString = () => {
+  const today = new Date();
+  return today.toISOString().split("T")[0];
+};
+
+const getQuoteOfTheDay = (quotesArray, cachedQuote) => {
+  if (!quotesArray || !Array.isArray(quotesArray)) {
+    throw new Error("Invalid quotes array");
+  }
+
+  const todayDate = getTodayDateString();
+  if (lastSelectedDate !== todayDate || !cachedQuote) {
+    const randomIndex = Math.floor(Math.random() * quotesArray.length);
+    cachedQuote = quotesArray[randomIndex];
+    lastSelectedDate = todayDate;
+  }
+  return cachedQuote;
+};
+
 app.get("/api/inspirational", (req, res) => {
-  const randomIndex = Math.floor(Math.random() * inspirationalQuotes.length);
-  res.json({ quote: inspirationalQuotes[randomIndex] });
+  const quote = getQuoteOfTheDay(inspirationalQuotes, cachedInspirationalQuote);
+  cachedInspirationalQuote = quote;
+  res.json({ quote });
 });
 
 app.get("/api/standard", (req, res) => {
-  const randomIndex = Math.floor(Math.random() * standardQuotes.length);
-  res.json({ quote: standardQuotes[randomIndex] });
+  const quote = getQuoteOfTheDay(standardQuotes, cachedStandardQuote);
+  cachedStandardQuote = quote;
+  res.json({ quote });
 });
 
-// Start server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
