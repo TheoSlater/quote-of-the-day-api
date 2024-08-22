@@ -1,10 +1,9 @@
 const cors = require("cors");
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 3001;
 
 const { inspirationalQuotes } = require("./inspirationalQuotes");
-const { standardQuotes } = require("./standardQuotes");
+const { quotes: standardQuotes } = require("./standardQuotes");
 
 app.use(cors());
 app.use(express.json());
@@ -19,10 +18,6 @@ const getTodayDateString = () => {
 };
 
 const getQuoteOfTheDay = (quotesArray, cachedQuote) => {
-  if (!quotesArray || !Array.isArray(quotesArray)) {
-    throw new Error("Invalid quotes array");
-  }
-
   const todayDate = getTodayDateString();
   if (lastSelectedDate !== todayDate || !cachedQuote) {
     const randomIndex = Math.floor(Math.random() * quotesArray.length);
@@ -44,6 +39,4 @@ app.get("/api/standard", (req, res) => {
   res.json({ quote });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+module.exports = app;
