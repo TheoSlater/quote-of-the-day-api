@@ -12,9 +12,11 @@ app.use(express.json());
 // Middleware to check if the server is in maintenance mode
 app.use((req, res, next) => {
   if (process.env.MAINTENANCE_MODE === "true") {
-    return res.status(503).json({
-      message: "Server is in maintenance mode. Please try again later.",
-    });
+    return res
+      .status(503)
+      .json({
+        message: "Server is in maintenance mode. Please try again later.",
+      });
   }
   next();
 });
