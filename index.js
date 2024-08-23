@@ -5,17 +5,10 @@ const app = express();
 
 const { inspirationalQuotes } = require("./inspirationalQuotes");
 const { quotes: standardQuotes } = require("./standardQuotes");
+const { comfortingQuotes } = require("./comfortingQuotes");
 
 app.use(cors());
 app.use(express.json());
-
-// Middleware to check if the server is in maintenance mode
-app.use((req, res, next) => {
-  if (process.env.MAINTENANCE_MODE === "true") {
-    return res.status(503).sendFile(path.join(__dirname, "maintenance.html"));
-  }
-  next();
-});
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
@@ -23,6 +16,7 @@ app.get("/", (req, res) => {
 
 let cachedInspirationalQuote = null;
 let cachedStandardQuote = null;
+let cachedComfortingQuote = null;
 let lastSelectedDate = null;
 
 const getTodayDateString = () => {
@@ -49,6 +43,12 @@ app.get("/api/inspirational", (req, res) => {
 app.get("/api/standard", (req, res) => {
   const quote = getQuoteOfTheDay(standardQuotes, cachedStandardQuote);
   cachedStandardQuote = quote;
+  res.json({ quote });
+});
+
+app.get("/api/comforting", (req, res) => {
+  const quote = getQuoteOfTheDay(comfortingQuotes, cachedComfortingQuote);
+  cachedComfortingQuote = quote;
   res.json({ quote });
 });
 
